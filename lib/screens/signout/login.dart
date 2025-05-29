@@ -235,14 +235,17 @@
 //   }
 // }
 
+import 'package:coop_farm/screens/signout/register.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:generics_components_flutter/generics_components_flutter.dart';
 
+import '../products/insert_products.dart';
+
 final TextEditingController _emailController = TextEditingController();
 final TextEditingController _senhaController = TextEditingController();
 
-class Login extends StatelessWidget {
+class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size sizeScreen = MediaQuery.of(context).size;
@@ -262,7 +265,7 @@ class Login extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Spacer(),
-                      Icon(Icons.agriculture, size: 80, color: const Color(0xFF4CAF50)),
+                      Icon(Icons.agriculture, size: 80, color: const Color(0xFF3E513F)),
                       const SizedBox(height: 16),
                       Text(
                         'FarmCoop',
@@ -326,7 +329,12 @@ class Login extends StatelessWidget {
                                 ),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    print("Cadastro clicado");
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UserRegister(),
+                                      ),
+                                    );
                                   },
                               ),
                             ],
@@ -357,7 +365,7 @@ class Login extends StatelessWidget {
                           label: const Text('Entrar'),
                           icon: const Icon(Icons.login),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF3E513F),
+                            backgroundColor: const Color(0xFF4CAF50),
                             foregroundColor: const Color(0xFFE8E3D4),
                             elevation: 4,
                             shape: RoundedRectangleBorder(
