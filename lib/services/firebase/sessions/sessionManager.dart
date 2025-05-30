@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import '../../../models/cliente.dart';
-import '../../../services/cache/transaction_cache_service.dart';
 import '../../../services/cache/products/product_cache_service.dart';
-import 'package:yes_bank/main.dart';
-
+import '../../../store/cliente_store.dart';
 import '../users/login/login_firebase.dart';
 
 

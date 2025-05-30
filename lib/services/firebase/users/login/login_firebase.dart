@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:yes_bank/store/cliente_store.dart';
 
-import '../sessions/sessionManager.dart';
+import '../../../../store/cliente_store.dart';
 
 class LoginFirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;

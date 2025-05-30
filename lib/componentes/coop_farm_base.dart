@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
-import '../screens/signout/login.dart';
+import 'package:generics_components_flutter/generics_components_flutter.dart';
+import '../utils/app_menu_itens.dart'; // Certifique-se de que esse arquivo retorna List<MenuItem>
 
+/// AppBar personalizada do CoopFarm
 class CoopFarmAppBar extends StatelessWidget implements PreferredSizeWidget {
-  @override
-  final Size preferredSize;
-
   const CoopFarmAppBar({Key? key})
       : preferredSize = const Size.fromHeight(70.0),
         super(key: key);
 
   @override
+  final Size preferredSize;
+
+  @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: const Color(0xFF3E513F),
-      leading: IconButton(
-        icon: const Icon(Icons.menu, color: Color(0xFFE8E3D4)),
-        onPressed: () => Scaffold.of(context).openDrawer(),
+      leading: Builder(
+        builder: (context) => IconButton(
+          icon: const Icon(Icons.menu, color: Color(0xFFE8E3D4)),
+          onPressed: () => Scaffold.of(context).openDrawer(),
+        ),
       ),
       title: const Text(
         'Coop Farm',
@@ -30,10 +34,7 @@ class CoopFarmAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.account_circle, color: Color(0xFFE8E3D4)),
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => LoginScreen()),
-            );
+            Navigator.pushReplacementNamed(context, '/login');
           },
         ),
       ],
@@ -42,17 +43,25 @@ class CoopFarmAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
+/// Layout base com AppBar, Drawer e Container estilizado
 class CoopFarmLayout extends StatelessWidget {
   final Widget child;
   final Size sizeScreen;
 
-  const CoopFarmLayout({Key? key, required this.sizeScreen, required this.child}) : super(key: key);
+  const CoopFarmLayout({
+    Key? key,
+    required this.child,
+    required this.sizeScreen,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CoopFarmAppBar(),
-      // drawer: const Menu(), // Substitua por seu menu personalizado
+      drawer: GenericDrawerMenu(
+        headerTitle: 'Coop Farm Menu',
+        menuItems: AppMenuItems.mainMenuItems(context),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

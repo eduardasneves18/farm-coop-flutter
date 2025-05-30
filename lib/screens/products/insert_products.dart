@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:generics_components_flutter/generics_components_flutter.dart';
 import '../../componentes/coop_farm_base.dart';
 import '../../services/firebase/products/products_firebase.dart';
+import '../../utils/app_menu_itens.dart';
 import '../../utils/user_auth_checker.dart';
 
 class RegisterProductScreen extends StatefulWidget {
@@ -92,7 +93,8 @@ class _RegisterProductState extends State<RegisterProductScreen> {
 
     return !_userChecked
         ? const Scaffold(body: Center(child: CircularProgressIndicator()))
-        : CoopFarmLayout(
+        :
+    CoopFarmLayout(
       sizeScreen: sizeScreen,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

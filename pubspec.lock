@@ -165,7 +165,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: e1213c26e438358597e93d7456d8e04bd570206e
+      resolved-ref: "428e6b63727f5f47010576e6d12363c6a12a2f37"
       url: "https://github.com/eduardasneves18/generics_components_flutter.git"
     source: git
     version: "0.0.1"
@@ -241,6 +241,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.16.0"
+  mobx:
+    dependency: "direct main"
+    description:
+      name: mobx
+      sha256: bf1a90e5bcfd2851fc6984e20eef69557c65d9e4d0a88f5be4cf72c9819ce6b0
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.0"
   nested:
     dependency: transitive
     description:
