@@ -1,8 +1,10 @@
 import 'package:coop_farm/screens/home/home.dart';
+import 'package:coop_farm/store/cliente_store.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:coop_farm/screens/signout/login.dart';
 import 'package:coop_farm/services/firebase/users/user_firebase.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -12,7 +14,16 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider<ClienteStore>(
+          create: (_) => ClienteStore(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

@@ -14,7 +14,7 @@ class CoopFarmAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFF3E513F),
+      backgroundColor: const Color(0xFF030303),
       leading: Builder(
         builder: (context) => IconButton(
           icon: const Icon(Icons.menu, color: Color(0xFFE8E3D4)),
@@ -26,7 +26,7 @@ class CoopFarmAppBar extends StatelessWidget implements PreferredSizeWidget {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 24,
-          color: Color(0xFFD5C1A1),
+          color: Color(0xFF4CAF50),
         ),
       ),
       centerTitle: true,
@@ -43,7 +43,6 @@ class CoopFarmAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-/// Layout base com AppBar, Drawer e Container estilizado
 class CoopFarmLayout extends StatelessWidget {
   final Widget child;
   final Size sizeScreen;
@@ -61,7 +60,12 @@ class CoopFarmLayout extends StatelessWidget {
       drawer: GenericDrawerMenu(
         headerTitle: 'Coop Farm Menu',
         menuItems: AppMenuItems.mainMenuItems(context),
+        headerTextColor: const Color(0xFF4CAF50),
+        menuItemTextColor: const Color(0xFFD5C1A1),
+        iconColor: const Color(0xFFD5C1A1),
+        backgroundColor: Colors.grey[900]!,
       ),
+
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

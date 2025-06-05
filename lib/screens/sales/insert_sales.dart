@@ -123,6 +123,8 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
             hint: 'ID do Produto',
             textColor: const Color(0xFFD5C1A1),
             borderColor: const Color(0xFF4CAF50),
+            fillColor: Colors.transparent,
+            iconColor: const Color(0xFFD5C1A1),
           ),
           const SizedBox(height: 10),
           TextFields(
@@ -132,6 +134,8 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
             hint: 'Nome do Produto',
             textColor: const Color(0xFFD5C1A1),
             borderColor: const Color(0xFF4CAF50),
+            fillColor: Colors.transparent,
+            iconColor: const Color(0xFFD5C1A1),
           ),
           const SizedBox(height: 10),
           TextFields(
@@ -142,6 +146,8 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
             textType: TextInputType.number,
             textColor: const Color(0xFFD5C1A1),
             borderColor: const Color(0xFF4CAF50),
+            fillColor: Colors.transparent,
+            iconColor: const Color(0xFFD5C1A1),
           ),
           const SizedBox(height: 10),
           TextFields(
@@ -149,8 +155,12 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
             sizeScreen: sizeScreen,
             icon: Icons.straighten,
             hint: 'Unidade de Medida (ex: kg, litros)',
+            hintColor: const Color(0xFFD5C1A1),
             textColor: const Color(0xFFD5C1A1),
             borderColor: const Color(0xFF4CAF50),
+            fillColor: Colors.transparent,
+            iconColor: const Color(0xFFD5C1A1),
+            labelColor: const Color(0xFF4CAF50),
           ),
           const SizedBox(height: 10),
           TextFields(
@@ -161,15 +171,8 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
             textType: TextInputType.number,
             textColor: const Color(0xFFD5C1A1),
             borderColor: const Color(0xFF4CAF50),
-          ),
-          const SizedBox(height: 10),
-          TextFields(
-            controller: _descriptionController,
-            sizeScreen: sizeScreen,
-            icon: Icons.description,
-            hint: 'Descrição da Venda',
-            textColor: const Color(0xFFD5C1A1),
-            borderColor: const Color(0xFF4CAF50),
+            fillColor: Colors.transparent,
+            iconColor: const Color(0xFFD5C1A1),
           ),
           const SizedBox(height: 10),
           TextFields(
@@ -179,6 +182,8 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
             hint: 'Nome do Cliente',
             textColor: const Color(0xFFD5C1A1),
             borderColor: const Color(0xFF4CAF50),
+            fillColor: Colors.transparent,
+            iconColor: const Color(0xFFD5C1A1),
           ),
           const SizedBox(height: 10),
           TextFields(
@@ -188,6 +193,8 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
             hint: 'Forma de Pagamento (PIX, dinheiro, etc)',
             textColor: const Color(0xFFD5C1A1),
             borderColor: const Color(0xFF4CAF50),
+            fillColor: Colors.transparent,
+            iconColor: const Color(0xFFD5C1A1),
           ),
           const SizedBox(height: 30),
           SizedBox(
@@ -203,6 +210,23 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
               ),
               child: const Text(
                 'Registrar Venda',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _registerSale,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF4CAF50),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'Cadastrar Venda',
                 style: TextStyle(color: Colors.white),
               ),
             ),
