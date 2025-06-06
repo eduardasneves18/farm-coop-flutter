@@ -28,7 +28,7 @@ class AppMenuItems {
         },
       ),
       MenuItem(
-        icon: Icons.settings,
+        icon: Icons.straighten,
         title: 'Produtos',
         onTap: () {
           Navigator.push(
@@ -38,7 +38,7 @@ class AppMenuItems {
         },
       ),
       MenuItem(
-        icon: Icons.settings,
+        icon: Icons.attach_money,
         title: 'Cadastro de venda',
         onTap: () {
           Navigator.push(

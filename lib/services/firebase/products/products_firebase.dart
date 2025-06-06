@@ -19,14 +19,16 @@ class ProductsFirebaseService {
     required String nome,
     required double precoCusto,
     required double precoVenda,
+    required double lucro,
+    required double percentualLucro,
+    required String unidadeMedida,
+    required double quantidadeDisponivel,
   }) async {
     try {
       final User? user = await _usersService.getUser();
       if (user == null) throw Exception('Nenhum usuário autenticado');
 
       final String userId = user.uid;
-      final double lucro = precoVenda - precoCusto;
-      final double percentualLucro = precoCusto > 0 ? (lucro / precoCusto) * 100 : 0;
 
       await _firebaseService.create('products', {
         'usuario_id': userId,
@@ -35,6 +37,8 @@ class ProductsFirebaseService {
         'preco_venda': precoVenda,
         'lucro': lucro,
         'percentual_lucro': percentualLucro,
+        'unidade_medida': unidadeMedida,
+        'quantidade_disponivel': quantidadeDisponivel,
       });
 
       await _cacheService.clearCache();
@@ -66,6 +70,8 @@ class ProductsFirebaseService {
             'preco_venda': value['preco_venda'],
             'lucro': value['lucro'],
             'percentual_lucro': value['percentual_lucro'],
+            'unidade_medida': value['unidade_medida'],
+            'quantidade_disponivel': value['quantidade_disponivel'],
           });
         }
       });
@@ -154,4 +160,3 @@ class ProductsFirebaseService {
     }
   }
 }
-

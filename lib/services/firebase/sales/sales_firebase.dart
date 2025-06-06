@@ -19,7 +19,6 @@ class SalesFirebaseService {
   Future<void> createSale({
     required String productId,
     required String productName,
-    required String description,
     required double quantity,
     required double value,
     required String unit,
@@ -37,7 +36,6 @@ class SalesFirebaseService {
         'usuario_id': userId,
         'product_id': productId,
         'product_name': productName,
-        'description': description,
         'quantity': quantity,
         'value': value,
         'unit': unit,
@@ -72,7 +70,6 @@ class SalesFirebaseService {
             'saleId': key,
             'product_id': value['product_id'],
             'product_name': value['product_name'],
-            'description': value['description'],
             'quantity': value['quantity'],
             'value': value['value'],
             'unit': value['unit'],

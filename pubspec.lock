@@ -165,7 +165,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "8e6d27ad3f2f05f9562613d20628bdda6ec4fb86"
+      resolved-ref: "5f0651e588211a8a4c73e66076c26201d30c1b5e"
       url: "https://github.com/eduardasneves18/generics_components_flutter.git"
     source: git
     version: "0.0.1"

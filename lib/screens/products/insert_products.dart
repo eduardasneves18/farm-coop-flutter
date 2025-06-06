@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:generics_components_flutter/generics_components_flutter.dart';
+
 import '../../componentes/coop_farm_base.dart';
 import '../../services/firebase/products/products_firebase.dart';
-import '../../utils/app_menu_itens.dart';
 import '../../utils/user_auth_checker.dart';
 
 class RegisterProductScreen extends StatefulWidget {
-  const RegisterProductScreen({Key? key}) : super(key: key);
+  const RegisterProductScreen({super.key});
 
   @override
-  _RegisterProductState createState() => _RegisterProductState();
+  State<RegisterProductScreen> createState() => _RegisterProductScreenState();
 }
 
-class _RegisterProductState extends State<RegisterProductScreen> {
-  final ProductsFirebaseService _productService = ProductsFirebaseService();
-
+class _RegisterProductScreenState extends State<RegisterProductScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _costPriceController = TextEditingController();
   final TextEditingController _sellPriceController = TextEditingController();
+  final TextEditingController _unitController = TextEditingController();
+  final TextEditingController _profitPercentController = TextEditingController();
+  final ProductsFirebaseService _productService = ProductsFirebaseService();
+  String? _unidadeSelecionada;
   double? _profitMargin;
+  double? _profitValue;
   bool _userChecked = false;
 
   @override
@@ -36,14 +39,36 @@ class _RegisterProductState extends State<RegisterProductScreen> {
     );
   }
 
-  void _calculateProfit() {
-    final cost = double.tryParse(_costPriceController.text.trim()) ?? 0;
-    final sell = double.tryParse(_sellPriceController.text.trim()) ?? 0;
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _costPriceController.dispose();
+    _sellPriceController.dispose();
+    _unitController.dispose();
+    _profitPercentController.dispose();
+    super.dispose();
+  }
+
+  void _calculateProfitMargin() {
+    final double? costPrice = double.tryParse(_costPriceController.text);
+    final double? sellingPrice = double.tryParse(_sellPriceController.text);
+
+    if (costPrice == null || sellingPrice == null || costPrice <= 0) {
+      setState(() {
+        _profitMargin = null;
+        _profitValue = null;
+        _profitPercentController.clear();
+      });
+      return;
+    }
+
+    final double profit = sellingPrice - costPrice;
+    final double margin = (profit / costPrice) * 100;
 
     setState(() {
-      _profitMargin = (cost > 0 && sell > cost)
-          ? ((sell - cost) / cost) * 100
-          : null;
+      _profitMargin = margin;
+      _profitValue = profit;
+      _profitPercentController.text = '${margin.toStringAsFixed(2)} %';
     });
   }
 
@@ -51,8 +76,10 @@ class _RegisterProductState extends State<RegisterProductScreen> {
     final String nome = _nameController.text.trim();
     final double? custo = double.tryParse(_costPriceController.text.trim());
     final double? venda = double.tryParse(_sellPriceController.text.trim());
+    final String? unidade = _unidadeSelecionada;
+    final double? quantidade = double.tryParse(_unitController.text.trim());
 
-    if (nome.isEmpty || custo == null || venda == null || custo <= 0 || venda <= 0) {
+    if (nome.isEmpty || custo == null || venda == null || unidade == null || quantidade == null || custo <= 0 || venda <= 0 || quantidade <= 0) {
       DialogMessage.showMessage(
         context: context,
         title: 'Erro',
@@ -66,12 +93,22 @@ class _RegisterProductState extends State<RegisterProductScreen> {
         nome: nome,
         precoCusto: custo,
         precoVenda: venda,
+        percentualLucro: _profitMargin?? 0.0,
+        lucro: _profitValue?? 0.0,
+        unidadeMedida: unidade,
+        quantidadeDisponivel: quantidade,
       );
 
       _nameController.clear();
       _costPriceController.clear();
       _sellPriceController.clear();
-      setState(() => _profitMargin = null);
+      _unitController.clear();
+      _profitPercentController.clear();
+      setState(() {
+        _unidadeSelecionada = null;
+        _profitMargin = null;
+        _profitValue = null;
+      });
 
       DialogMessage.showMessage(
         context: context,
@@ -89,18 +126,17 @@ class _RegisterProductState extends State<RegisterProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Size sizeScreen = MediaQuery.of(context).size;
+    final sizeScreen = MediaQuery.of(context).size;
 
     return !_userChecked
         ? const Scaffold(body: Center(child: CircularProgressIndicator()))
-        :
-    CoopFarmLayout(
+        : CoopFarmLayout(
       sizeScreen: sizeScreen,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Cadastrar Novo Produto',
+            'Cadastro de Produto',
             style: TextStyle(
               fontSize: sizeScreen.width * 0.05,
               fontWeight: FontWeight.bold,
@@ -111,38 +147,77 @@ class _RegisterProductState extends State<RegisterProductScreen> {
           TextFields(
             controller: _nameController,
             sizeScreen: sizeScreen,
-            icon: Icons.local_florist,
-            hint: 'Nome do Produto',
+            icon: Icons.shopping_cart,
+            hint: 'Nome do produto',
             hintColor: const Color(0xFFD5C1A1),
-            iconColor: const Color(0xFFD5C1A1),
-            borderColor: const Color(0xFF4CAF50),
             textColor: const Color(0xFFD5C1A1),
+            borderColor: const Color(0xFF4CAF50),
             cursorColor: const Color(0xFF4CAF50),
             fillColor: Colors.transparent,
             labelColor: const Color(0xFF4CAF50),
           ),
-          const SizedBox(height: 20),
-          TextFields(
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: DropdownField(
+                  sizeScreen: sizeScreen,
+                  hint: 'Unidade',
+                  hintColor: const Color(0xFFD5C1A1),
+                  textColor: const Color(0xFFD5C1A1),
+                  borderColor: const Color(0xFF4CAF50),
+                  fillColor: Colors.transparent,
+                  iconColor: const Color(0xFFD5C1A1),
+                  labelColor: const Color(0xFF4CAF50),
+                  opcoesDeSelecao: ['kg', 'l', 'g', 'dz'],
+                  dropdownColor: Colors.grey[900],
+                  value: _unidadeSelecionada,
+                  onChanged: (String? value) {
+                    setState(() => _unidadeSelecionada = value);
+                  },
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                flex: 2,
+                child: NumberField(
+                  controller: _unitController,
+                  sizeScreen: sizeScreen,
+                  hint: 'Quantidade${_unidadeSelecionada != null ? ' ($_unidadeSelecionada)' : ''}',
+                  hintColor: const Color(0xFFD5C1A1),
+                  iconColor: const Color(0xFFD5C1A1),
+                  textColor: const Color(0xFFD5C1A1),
+                  borderColor: const Color(0xFF4CAF50),
+                  cursorColor: const Color(0xFF4CAF50),
+                  fillColor: Colors.transparent,
+                  labelColor: const Color(0xFF4CAF50),
+                  textType: TextInputType.number,
+                ),
+              ),
+            ],
+          ),
+          NumberField(
             controller: _costPriceController,
             sizeScreen: sizeScreen,
             icon: Icons.attach_money,
-            hint: 'Preço de Custo',
+            hint: 'Preço de custo',
             hintColor: const Color(0xFFD5C1A1),
             iconColor: const Color(0xFFD5C1A1),
-            borderColor: const Color(0xFF4CAF50),
             textColor: const Color(0xFFD5C1A1),
+            borderColor: const Color(0xFF4CAF50),
             cursorColor: const Color(0xFF4CAF50),
             fillColor: Colors.transparent,
             labelColor: const Color(0xFF4CAF50),
             textType: TextInputType.number,
-            onChanged: (_) => _calculateProfit(),
+            onChanged: (_) => _calculateProfitMargin(),
           ),
-          const SizedBox(height: 20),
-          TextFields(
+          const SizedBox(height: 16),
+          NumberField(
             controller: _sellPriceController,
             sizeScreen: sizeScreen,
-            icon: Icons.trending_up,
-            hint: 'Preço de Venda',
+            icon: Icons.monetization_on,
+            hint: 'Preço de venda',
             hintColor: const Color(0xFFD5C1A1),
             iconColor: const Color(0xFFD5C1A1),
             textColor: const Color(0xFFD5C1A1),
@@ -151,21 +226,22 @@ class _RegisterProductState extends State<RegisterProductScreen> {
             fillColor: Colors.transparent,
             labelColor: const Color(0xFF4CAF50),
             textType: TextInputType.number,
-            onChanged: (_) => _calculateProfit(),
+            onChanged: (_) => _calculateProfitMargin(),
           ),
-          const SizedBox(height: 30),
-          Text(
-            _profitMargin != null
-                ? 'Lucro estimado: ${_profitMargin!.toStringAsFixed(2)}%'
-                : 'Preencha corretamente os preços para ver o lucro.',
-            style: TextStyle(
-              fontSize: sizeScreen.width * 0.04,
-              color: _profitMargin != null
-                  ? const Color(0xFFD5C1A1)
-                  : Colors.grey[400],
-            ),
+          const SizedBox(height: 16),
+          TextFields(
+            controller: _profitPercentController,
+            sizeScreen: sizeScreen,
+            icon: Icons.percent,
+            hint: 'Margem de lucro',
+            hintColor: const Color(0xFFD5C1A1),
+            textColor: const Color(0xFFD5C1A1),
+            borderColor: const Color(0xFF4CAF50),
+            cursorColor: const Color(0xFF4CAF50),
+            fillColor: Colors.transparent,
+            labelColor: const Color(0xFF4CAF50),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
