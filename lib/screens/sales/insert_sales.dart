@@ -198,7 +198,7 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
                 _unitController.text = produto['unidade_medida'] ?? '';
               });
 
-              _atualizarValorVenda(); // garante valor correto após seleção
+              _atualizarValorVenda();
             },
           ),
           NumberField(

@@ -12,7 +12,7 @@ class SessionManager {
   final LoginFirebaseAuthService _authService;
   final Cliente _user;
   final ClienteStore _clienteStore;
-  final ProductCacheService _cacheService = ProductCacheService();
+  final ProductsCacheService _cacheService = ProductsCacheService();
 
   SessionManager(this._authService, this._user, this._clienteStore) {
     _startSessionTimer();

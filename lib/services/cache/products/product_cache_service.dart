@@ -1,4 +1,4 @@
-class ProductCacheService {
+class ProductsCacheService {
   List<Map<String, dynamic>>? _productsCache;
 
   Future<void> saveProducts(List<Map<String, dynamic>> products) async {

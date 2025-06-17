@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:generics_components_flutter/generics_components_flutter.dart';
-import '../utils/app_menu_itens.dart'; // Certifique-se de que esse arquivo retorna List<MenuItem>
+import '../utils/app_menu_itens.dart';
 
-/// AppBar personalizada do CoopFarm
+
 class CoopFarmAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CoopFarmAppBar({Key? key})
       : preferredSize = const Size.fromHeight(70.0),
@@ -83,15 +83,13 @@ class CoopFarmLayout extends StatelessWidget {
           horizontal: 20,
           vertical: sizeScreen.height * 0.04,
         ),
-        child: SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFE8E3D4).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            padding: const EdgeInsets.all(16.0),
-            child: child,
+        child: Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFFE8E3D4).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
           ),
+          padding: const EdgeInsets.all(16.0),
+          child: child, // agora sem o SingleChildScrollView
         ),
       ),
     );

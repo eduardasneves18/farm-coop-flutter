@@ -8,7 +8,7 @@ import '../users/user_firebase.dart';
 
 class SalesFirebaseService {
   final FirebaseServiceGeneric _firebaseService = FirebaseServiceGeneric();
-  final ProductCacheService _cacheService = ProductCacheService();
+  final ProductsCacheService _cacheService = ProductsCacheService();
   final UsersFirebaseService _usersService = UsersFirebaseService();
 
   String _lastSaleId = "";

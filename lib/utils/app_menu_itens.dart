@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../models/cliente.dart';
 import '../screens/home/home.dart';
+import '../screens/products/list_products.dart';
 import '../screens/signout/login.dart';
 import '../services/firebase/sessions/sessionManager.dart';
 import '../services/firebase/users/login/login_firebase.dart';
@@ -29,11 +30,21 @@ class AppMenuItems {
       ),
       MenuItem(
         icon: Icons.straighten,
-        title: 'Produtos',
+        title: 'Cadastro de produtos',
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => RegisterProductScreen()),
+          );
+        },
+      ),
+      MenuItem(
+        icon: Icons.straighten,
+        title: 'Lista de produtos',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ListProductsScreen()),
           );
         },
       ),
