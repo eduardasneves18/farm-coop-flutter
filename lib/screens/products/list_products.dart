@@ -53,19 +53,29 @@ class _ListProductsScreenState extends State<ListProductsScreen> {
     final sizeScreen = MediaQuery.of(context).size;
 
     return CoopFarmLayout(
-      sizeScreen: MediaQuery.of(context).size,
+      sizeScreen: sizeScreen,
       child: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _products.isEmpty
-          ? const Center(
-        child: Text(
-          'Nenhum produto encontrado.',
-          style: TextStyle(color: Colors.white),
-        ),
-      )
           : Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
+          Text(
+            'Produtos',
+            style: TextStyle(
+              fontSize: sizeScreen.width * 0.05,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFFD5C1A1),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _products.isEmpty
+              ? const Center(
+            child: Text(
+              'Nenhum produto encontrado.',
+              style: TextStyle(color: Colors.white),
+            ),
+          )
+              : Expanded(
             child: ListView.builder(
               itemCount: _products.length,
               itemBuilder: (context, index) {
@@ -82,8 +92,12 @@ class _ListProductsScreenState extends State<ListProductsScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Quantidade total: ${product['quantidade_disponivel']} ${product['unidade_medida']}' ?? ''),
-                        Text('Preço por unidade: R\$ ${product['preco_venda']?.toStringAsFixed(2) ?? '0.00'}'),
+                        Text(
+                          'Quantidade total: ${product['quantidade_disponivel']} ${product['unidade_medida']}',
+                        ),
+                        Text(
+                          'Preço por unidade: R\$ ${product['preco_venda']?.toStringAsFixed(2) ?? '0.00'}',
+                        ),
                       ],
                     ),
                   ),

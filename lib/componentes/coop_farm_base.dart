@@ -89,7 +89,7 @@ class CoopFarmLayout extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           padding: const EdgeInsets.all(16.0),
-          child: child, // agora sem o SingleChildScrollView
+          child: child,
         ),
       ),
     );

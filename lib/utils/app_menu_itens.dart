@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../models/cliente.dart';
 import '../screens/home/home.dart';
 import '../screens/products/list_products.dart';
+import '../screens/sales/list_sales.dart';
 import '../screens/signout/login.dart';
 import '../services/firebase/sessions/sessionManager.dart';
 import '../services/firebase/users/login/login_firebase.dart';
@@ -45,6 +46,16 @@ class AppMenuItems {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ListProductsScreen()),
+          );
+        },
+      ),
+      MenuItem(
+        icon: Icons.straighten,
+        title: 'Dashboard de vendas',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ListSalesByProfitScreen()),
           );
         },
       ),
