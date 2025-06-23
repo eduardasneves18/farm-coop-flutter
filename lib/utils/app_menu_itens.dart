@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 
 import '../models/cliente.dart';
 import '../screens/home/home.dart';
+import '../screens/production/insert_production_item.dart';
+import '../screens/production/list_productions.dart';
 import '../screens/products/list_products.dart';
 import '../screens/sales/list_sales.dart';
 import '../screens/signout/login.dart';
@@ -66,6 +68,26 @@ class AppMenuItems {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => RegisterSaleScreen()),
+          );
+        },
+      ),
+      MenuItem(
+        icon: Icons.attach_money,
+        title: 'Gestão de produção',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => RegisterProductionScreen()),
+          );
+        },
+      ),
+      MenuItem(
+        icon: Icons.attach_money,
+        title: 'Dashboard de produção',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ListProductionsScreen()),
           );
         },
       ),
