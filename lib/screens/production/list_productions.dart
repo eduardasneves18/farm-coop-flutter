@@ -67,7 +67,7 @@ class _ListProductionsScreenState extends State<ListProductionsScreen> {
     <html>
       <head>
         <style>
-          html, body {
+         html, body {
           margin: 0;
           padding: 0;
           color: white;
@@ -88,6 +88,7 @@ class _ListProductionsScreenState extends State<ListProductionsScreen> {
 
         #scroll_wrapper::-webkit-scrollbar-thumb {
           background: #888;
+          background-color: transparent;
           border-radius: 4px;
         }
 
@@ -98,6 +99,7 @@ class _ListProductionsScreenState extends State<ListProductionsScreen> {
         #table_container {
           width: max-content;
           margin: 0 auto;
+          background-color: transparent;
         }
 
         .google-visualization-table-table {
@@ -110,9 +112,9 @@ class _ListProductionsScreenState extends State<ListProductionsScreen> {
         }
 
         .google-visualization-table-th {
-          background-color: rgba(76, 175, 80, 0.06) !important;
+          background-color: #2A2A28;
           color: #A5D6A7 !important;
-          border: 1px solid #555555 !important;
+          border: 1px solid #5b5b5b !important;
           padding: 18px 22px;
           text-align: center;
           font-size: 18px;
@@ -127,6 +129,7 @@ class _ListProductionsScreenState extends State<ListProductionsScreen> {
           text-overflow: ellipsis;
           white-space: nowrap;
           font-size: 17px;
+          background-color: transparent;
         }
 
         .google-visualization-table-tr-even {

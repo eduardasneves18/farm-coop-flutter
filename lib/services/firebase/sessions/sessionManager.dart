@@ -45,11 +45,6 @@ class SessionManager {
     await _authService.signOut();
     _clearUser();
     await _cacheService.clearCache();
-
-    // navigatorKey.currentState?.pushReplacement(
-    //   MaterialPageRoute(builder: (_) => ListTransactions()),
-    // );
-
   }
 
   void dispose() {

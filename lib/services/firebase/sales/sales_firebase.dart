@@ -57,7 +57,7 @@ class SalesFirebaseService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getSales(String usuarioId) async {
+  Future<List<Map<String, dynamic>>> getSales([String? productId]) async {
     final DatabaseEvent snapshot = await _firebaseService.fetch('sales');
     List<Map<String, dynamic>> sales = [];
 
@@ -65,7 +65,7 @@ class SalesFirebaseService {
       final Map<dynamic, dynamic> dados = snapshot.snapshot.value as Map;
 
       dados.forEach((key, value) {
-        if (value['usuario_id'] == usuarioId) {
+        if (productId == value['product_id'] || productId == null) {
           sales.add({
             'saleId': key,
             'product_id': value['product_id'],
@@ -116,7 +116,7 @@ class SalesFirebaseService {
     try {
       if (!executeSublist && startAt > 0) return [];
 
-      List<Map<String, dynamic>> sales = await getSales(usuarioId);
+      List<Map<String, dynamic>> sales = await getSales();
 
       if (lastSaleId != null && lastSaleId != _lastSaleId) {
         _lastSaleId = lastSaleId;
@@ -133,5 +133,19 @@ class SalesFirebaseService {
       print('Erro na paginação de vendas: $e');
       return [];
     }
+  }
+
+  Future<String?> getSalesProps(String productId, String prop) async {
+    try {
+      List<Map<String, dynamic>> product = await getSales(productId);
+
+      if (product != null) {
+        return product[0][prop];
+      }
+    } catch (e) {
+      print('Erro ao buscar nome do produto: $e');
+    }
+
+    return null;
   }
 }

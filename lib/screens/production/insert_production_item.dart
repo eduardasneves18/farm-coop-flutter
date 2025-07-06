@@ -1,9 +1,11 @@
+import 'package:coop_farm/componentes/coop_farm_base.dart';
+import 'package:coop_farm/componentes/fields/dropdown/products_dropdown_field.dart';
+import 'package:coop_farm/services/firebase/firebase.dart';
+import 'package:coop_farm/services/firebase/users/user_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:generics_components_flutter/generics_components_flutter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../../componentes/coop_farm_base.dart';
-import '../../services/firebase/firebase.dart';
-import '../../services/firebase/users/user_firebase.dart';
+import '../../componentes/fields/dropdown/unit_dropdow_field.dart';
+import '../../utils/user_auth_checker.dart';
 
 class RegisterProductionScreen extends StatefulWidget {
   const RegisterProductionScreen({super.key});
@@ -13,16 +15,35 @@ class RegisterProductionScreen extends StatefulWidget {
 }
 
 class _RegisterProductionScreenState extends State<RegisterProductionScreen> {
+  final FirebaseServiceGeneric _firebaseService = FirebaseServiceGeneric();
+  final UsersFirebaseService _usersService = UsersFirebaseService();
+
   final TextEditingController _productController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _unitController = TextEditingController();
   final TextEditingController _estimatedDateController = TextEditingController();
 
-  final FirebaseServiceGeneric _firebaseService = FirebaseServiceGeneric();
-  final UsersFirebaseService _usersService = UsersFirebaseService();
-
+  Map<String, dynamic>? _produtoSelecionado;
+  String? _unidadeSelecionada;
   String? _statusSelecionado;
+  bool _userChecked = false;
+
   final List<String> _statusOptions = ['Aguardando', 'Em Produção', 'Colhido'];
+
+  @override
+  void initState() {
+    super.initState();
+    _checkUser();
+  }
+
+  void _checkUser() {
+    UserAuthChecker.check(
+      context: context,
+      onAuthenticated: () {
+        setState(() => _userChecked = true);
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -50,7 +71,7 @@ class _RegisterProductionScreenState extends State<RegisterProductionScreen> {
     }
 
     try {
-      final User? user = await _usersService.getUser();
+      final user = await _usersService.getUser();
       if (user == null) throw Exception('Usuário não autenticado');
 
       await _firebaseService.create('productions', {
@@ -75,6 +96,7 @@ class _RegisterProductionScreenState extends State<RegisterProductionScreen> {
       _estimatedDateController.clear();
       setState(() {
         _statusSelecionado = null;
+        _produtoSelecionado = null;
       });
     } catch (e) {
       DialogMessage.showMessage(
@@ -93,16 +115,18 @@ class _RegisterProductionScreenState extends State<RegisterProductionScreen> {
       lastDate: DateTime(2100),
     );
     if (pickedDate != null) {
-      _estimatedDateController.text = '${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}';
+      _estimatedDateController.text =
+      '${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}';
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final sizeScreen = MediaQuery.of(context).size;
-    String? _unidadeSelecionada;
 
-    return CoopFarmLayout(
+    return !_userChecked
+        ? const Scaffold(body: Center(child: CircularProgressIndicator()))
+        : CoopFarmLayout(
       sizeScreen: sizeScreen,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,21 +140,22 @@ class _RegisterProductionScreenState extends State<RegisterProductionScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          TextFields(
-            controller: _productController,
+          ProductDropdownField(
             sizeScreen: sizeScreen,
-            hint: 'Produto',
-            icon: Icons.shopping_basket,
-            textColor: const Color(0xFFD5C1A1),
-            borderColor: const Color(0xFF4CAF50),
-            iconColor: const Color(0xFFD5C1A1),
-            fillColor: Colors.transparent,
+            onProdutoSelecionado: (produto) {
+              setState(() {
+                _produtoSelecionado = produto;
+                _productController.text = produto?['productId'] ?? '';
+                _unitController.text = produto?['unidade_medida'] ?? '';
+                _unidadeSelecionada = produto?['unidade_medida'];
+              });
+            },
           ),
           const SizedBox(height: 10),
           NumberField(
             controller: _quantityController,
             sizeScreen: sizeScreen,
-            hint: 'Quantidade',
+            hint: 'Quantidade${_unidadeSelecionada != null ? ' ($_unidadeSelecionada)' : ''}',
             iconColor: const Color(0xFFD5C1A1),
             textColor: const Color(0xFFD5C1A1),
             borderColor: const Color(0xFF4CAF50),
@@ -139,21 +164,12 @@ class _RegisterProductionScreenState extends State<RegisterProductionScreen> {
             labelColor: const Color(0xFF4CAF50),
           ),
           const SizedBox(height: 10),
-          DropdownField(
-            sizeScreen: sizeScreen,
-            hint: 'Unidade',
-            hintColor: const Color(0xFFD5C1A1),
-            textColor: const Color(0xFFD5C1A1),
-            borderColor: const Color(0xFF4CAF50),
-            fillColor: Colors.transparent,
-            iconColor: const Color(0xFFD5C1A1),
-            labelColor: const Color(0xFF4CAF50),
-            opcoesDeSelecao: ['kg', 'l', 'g', 'dz'],
-            dropdownColor: Colors.grey[900],
-            value: _unidadeSelecionada,
+          UnitDropdownField(
+            selectedUnit: _unidadeSelecionada,
             onChanged: (String? value) {
               setState(() => _unidadeSelecionada = value);
             },
+            sizeScreen: sizeScreen,
           ),
           const SizedBox(height: 10),
           DropdownField(

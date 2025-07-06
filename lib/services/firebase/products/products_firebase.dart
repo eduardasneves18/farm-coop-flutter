@@ -54,7 +54,7 @@ class ProductsFirebaseService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getProducts(String usuarioId) async {
+  Future<List<Map<String, dynamic>>> getProducts([String? productId]) async {
     final DatabaseEvent snapshot = await _firebaseService.fetch('products');
     List<Map<String, dynamic>> products = [];
 
@@ -62,7 +62,7 @@ class ProductsFirebaseService {
       final Map<dynamic, dynamic> dados = snapshot.snapshot.value as Map;
 
       dados.forEach((key, value) {
-        if (value['usuario_id'] == usuarioId) {
+        if (productId == null || key == productId) {
           products.add({
             'productId': key,
             'nome': value['nome'],
@@ -82,6 +82,7 @@ class ProductsFirebaseService {
     return products;
   }
 
+
   Future<void> updateProduct(
       String productId,
       Map<String, dynamic> data,
@@ -94,6 +95,12 @@ class ProductsFirebaseService {
       products[index] = {...data, 'productId': productId};
       await _cacheService.saveProducts(products);
     }
+  }
+
+  Future<void> updateProductQuantity(String id, double novaQuantidade) async {
+    await _firebaseService.update('products', id, {
+      'quantidade_disponivel': novaQuantidade,
+    });
   }
 
   Future<void> deleteProduct(
@@ -114,7 +121,7 @@ class ProductsFirebaseService {
     final User? user = await _usersService.getUser();
     if (user == null) throw Exception('Usuário não autenticado');
 
-    List<Map<String, dynamic>> products = await getProducts(user.uid);
+    List<Map<String, dynamic>> products = await getProducts();
 
     if (nome != null) {
       products = products
@@ -141,7 +148,7 @@ class ProductsFirebaseService {
     try {
       if (!executeSublist && startAt > 0) return [];
 
-      List<Map<String, dynamic>> products = await getProducts(usuarioId);
+      List<Map<String, dynamic>> products = await getProducts();
 
       if (lastProductId != null && lastProductId != _lastProductId) {
         _lastProductId = lastProductId;
@@ -159,4 +166,19 @@ class ProductsFirebaseService {
       return [];
     }
   }
+
+  Future<String?> getProductsProps(String productId, String prop) async {
+    try {
+      List<Map<String, dynamic>> product = await getProducts(productId);
+
+      if (product != null) {
+          return product[0][prop];
+      }
+    } catch (e) {
+      print('Erro ao buscar nome do produto: $e');
+    }
+
+    return null;
+  }
+
 }

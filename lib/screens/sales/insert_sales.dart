@@ -1,10 +1,9 @@
-import 'package:coop_farm/services/firebase/users/user_firebase.dart';
+import 'package:coop_farm/componentes/coop_farm_base.dart';
+import 'package:coop_farm/componentes/fields/dropdown/products_dropdown_field.dart';
+import 'package:coop_farm/services/firebase/sales/sales_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:generics_components_flutter/generics_components_flutter.dart';
-import '../../componentes/coop_farm_base.dart';
 import '../../services/firebase/products/products_firebase.dart';
-import '../../services/firebase/sales/sales_firebase.dart';
-import '../../utils/app_menu_itens.dart';
 import '../../utils/user_auth_checker.dart';
 
 class RegisterSaleScreen extends StatefulWidget {
@@ -16,39 +15,25 @@ class RegisterSaleScreen extends StatefulWidget {
 
 class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
   final SalesFirebaseService _salesService = SalesFirebaseService();
-  final UsersFirebaseService _usersFirebaseService = UsersFirebaseService();
 
   final TextEditingController _productIdController = TextEditingController();
   final TextEditingController _productNameController = TextEditingController();
+  final TextEditingController _productSalePrice = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _valueController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _clientNameController = TextEditingController();
   final TextEditingController _unitController = TextEditingController();
-  final TextEditingController _productSalePrice = TextEditingController();
 
-  List<Map<String, dynamic>> _produtos = [];
   Map<String, dynamic>? _produtoSelecionado;
   String? _unidadeSelecionada;
   String? _formaDePagamentoSelecionada;
   bool _userChecked = false;
 
-  final ProductsFirebaseService _productsService = ProductsFirebaseService();
-
-  void _loadProducts() async {
-    final user = await _usersFirebaseService.getUser();
-    final uid = user?.uid;
-    final produtos = await _productsService.getProducts(uid!);
-    setState(() {
-      _produtos = produtos;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     _checkUser();
-    _loadProducts();
     _quantityController.addListener(_atualizarValorVenda);
   }
 
@@ -96,7 +81,7 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
       DialogMessage.showMessage(
         context: context,
         title: 'Erro',
-        message: 'Preencha todos os campos obrigatórios corretamente.',
+        message: 'Preencha todos os campos obrigatórios.',
       );
       return;
     }
@@ -111,6 +96,10 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
         clientName: clientName,
         paymentMethod: paymentMethod,
       );
+
+      final double estoqueAtual = double.tryParse(_produtoSelecionado?['quantidade_disponivel'].toString() ?? '0') ?? 0;
+      final double novoEstoque = estoqueAtual - quantity;
+      await ProductsFirebaseService().updateProductQuantity(productId, novoEstoque);
 
       _productIdController.clear();
       _productNameController.clear();
@@ -175,30 +164,17 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          DropdownField(
+          ProductDropdownField(
             sizeScreen: sizeScreen,
-            hint: 'Produto',
-            textColor: const Color(0xFFD5C1A1),
-            borderColor: const Color(0xFF4CAF50),
-            labelColor: const Color(0xFF4CAF50),
-            fillColor: Colors.transparent,
-            iconColor: const Color(0xFFD5C1A1),
-            opcoesDeSelecao: _produtos.map((p) => p['nome'].toString()).toList(),
-            dropdownColor: Colors.grey[900],
-            value: _produtoSelecionado?['nome'],
-            onChanged: (String? nomeSelecionado) {
-              final produto = _produtos.firstWhere((p) => p['nome'] == nomeSelecionado);
+            onProdutoSelecionado: (produto) {
               setState(() {
                 _produtoSelecionado = produto;
-                _productIdController.text = produto['productId'] ?? '';
-                _productNameController.text = produto['nome'] ?? '';
-                final precoVenda = produto['preco_venda'];
-                _productSalePrice.text = precoVenda != null ? precoVenda.toString() : '';
-                _unidadeSelecionada = produto['unidade_medida'];
-                _unitController.text = produto['unidade_medida'] ?? '';
+                _productIdController.text = produto?['id'] ?? '';
+                _productNameController.text = produto?['nome'] ?? '';
+                _unitController.text = produto?['unidade_medida'] ?? '';
+                _productSalePrice.text = produto?['preco_venda']?.toString() ?? '';
+                _unidadeSelecionada = produto?['unidade_medida'];
               });
-
-              _atualizarValorVenda();
             },
           ),
           NumberField(

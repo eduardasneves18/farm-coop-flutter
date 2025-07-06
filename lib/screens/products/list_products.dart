@@ -41,7 +41,7 @@ class _ListProductsScreenState extends State<ListProductsScreen> {
 
     if (uid == null) return;
 
-    final products = await _productService.getProducts(uid);
+    final products = await _productService.getProducts();
     setState(() {
       _products = products;
       _isLoading = false;
