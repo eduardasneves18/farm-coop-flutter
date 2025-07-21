@@ -1,3 +1,4 @@
+import 'package:coop_farm/services/firebase/goals/goals_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -167,12 +168,12 @@ class ProductsFirebaseService {
     }
   }
 
-  Future<String?> getProductsProps(String productId, String prop) async {
+  Future<dynamic?> getProductsProps(String productId, String prop) async {
     try {
       List<Map<String, dynamic>> product = await getProducts(productId);
 
       if (product != null) {
-          return product[0][prop];
+        return product[0][prop];
       }
     } catch (e) {
       print('Erro ao buscar nome do produto: $e');

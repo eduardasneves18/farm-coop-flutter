@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../componentes/coop_farm_base.dart';
+import '../../services/firebase/products/products_firebase.dart';
 import '../../services/firebase/sales/sales_firebase.dart';
 import '../../services/firebase/users/user_firebase.dart';
+
 import '../../utils/user_auth_checker.dart';
 
 class ListSalesByProfitScreen extends StatefulWidget {
@@ -14,6 +16,9 @@ class ListSalesByProfitScreen extends StatefulWidget {
 
 class _ListSalesByProfitScreenState extends State<ListSalesByProfitScreen> {
   final SalesFirebaseService _salesService = SalesFirebaseService();
+  final ProductsFirebaseService _productService = ProductsFirebaseService();
+
+
 
   bool _isLoading = true;
   String _htmlContent = '';
@@ -46,16 +51,32 @@ class _ListSalesByProfitScreenState extends State<ListSalesByProfitScreen> {
       return lucroB.compareTo(lucroA);
     });
 
+    final Map<String, dynamic> custos = Map.fromEntries(await Future.wait(
+      sales.map((sale) async {
+        final result = (await _productService.getProductsProps(sale['product_id'], 'preco_custo')) as num? ?? 0.0;
+        return MapEntry(sale['product_id'], result);
+      }),
+    ));
+
     List<String> rows = sales.map((sale) {
       final productName = sale['product_name'] ?? '';
+      final productId = sale['product_id'];
       final client = sale['client_name'] ?? '';
       final quantity = sale['quantity'] ?? 0;
       final unit = sale['unit'] ?? '';
       final value = (sale['value'] ?? 0.0);
-      final total = quantity * value;
       final date = sale['date'] ?? '';
+      final custo = custos[productId];
+      final lucroTotal = (value - (quantity * custo));
 
-      return "['$productName', {v: $total, f: 'R\$ ${total.toStringAsFixed(2)}'}, '$quantity $unit', {v: $value, f: 'R\$ ${value.toStringAsFixed(2)}'}, '$client', '$date']";
+      return "['"
+      "$productName', "
+
+      "{v: $lucroTotal, f: 'R\$ ${lucroTotal.toStringAsFixed(2)}'}, "
+      "'$quantity $unit', "
+      "{v: $value, f: 'R\$ ${value.toStringAsFixed(2)}'}, "
+      "'$client', "
+      "'$date']";
     }).toList();
 
     _htmlContent = _buildHtmlTable(rows.join(',\n'));
@@ -75,6 +96,7 @@ class _ListSalesByProfitScreenState extends State<ListSalesByProfitScreen> {
       <head>
         <style>
           html, body {
+																	 
             margin: 0;
             padding: 0;
             color: white;
@@ -128,6 +150,7 @@ class _ListSalesByProfitScreenState extends State<ListSalesByProfitScreen> {
           }
 
           td {
+						  
             border: 1px solid #555555 !important;
             padding: 18px 22px;
             text-align: center;
@@ -156,6 +179,8 @@ class _ListSalesByProfitScreenState extends State<ListSalesByProfitScreen> {
           function drawTable() {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Produto');
+												   
+													   
             data.addColumn('number', 'Lucro Total');
             data.addColumn('string', 'Qt');
             data.addColumn('number', 'Vl. Unitário');
@@ -170,6 +195,8 @@ class _ListSalesByProfitScreenState extends State<ListSalesByProfitScreen> {
             table.draw(data, {
               showRowNumber: false,
               allowHtml: true,
+							
+								   
               cssClassNames: {
                 headerRow: 'google-visualization-table-th',
                 tableRow: '',
@@ -202,6 +229,7 @@ class _ListSalesByProfitScreenState extends State<ListSalesByProfitScreen> {
       child: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Stack(
+
         children: [
           Positioned.fill(
             child: Column(
@@ -226,6 +254,8 @@ class _ListSalesByProfitScreenState extends State<ListSalesByProfitScreen> {
               ],
             ),
           ),
+
+
         ],
       ),
     );

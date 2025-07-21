@@ -3,6 +3,7 @@ import 'package:coop_farm/componentes/fields/dropdown/products_dropdown_field.da
 import 'package:coop_farm/services/firebase/sales/sales_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:generics_components_flutter/generics_components_flutter.dart';
+import '../../services/firebase/goals/goals_firebase.dart';
 import '../../services/firebase/products/products_firebase.dart';
 import '../../utils/user_auth_checker.dart';
 
@@ -24,6 +25,8 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _clientNameController = TextEditingController();
   final TextEditingController _unitController = TextEditingController();
+  final GoalsFirebaseService _goalsService = GoalsFirebaseService();
+
 
   Map<String, dynamic>? _produtoSelecionado;
   String? _unidadeSelecionada;
@@ -95,6 +98,13 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
         unit: unit,
         clientName: clientName,
         paymentMethod: paymentMethod,
+      );
+
+      await _goalsService.verifyGoals(
+        productId: productId,
+        novoValor: value,
+        dataOperacao: DateTime.now(),
+        context: context,
       );
 
       final double estoqueAtual = double.tryParse(_produtoSelecionado?['quantidade_disponivel'].toString() ?? '0') ?? 0;
@@ -169,7 +179,7 @@ class _RegisterSaleScreenState extends State<RegisterSaleScreen> {
             onProdutoSelecionado: (produto) {
               setState(() {
                 _produtoSelecionado = produto;
-                _productIdController.text = produto?['id'] ?? '';
+                _productIdController.text = produto?['productId'] ?? '';
                 _productNameController.text = produto?['nome'] ?? '';
                 _unitController.text = produto?['unidade_medida'] ?? '';
                 _productSalePrice.text = produto?['preco_venda']?.toString() ?? '';

@@ -48,15 +48,15 @@ class _ListGoalsScreenState extends State<ListGoalsScreen> {
       final nomeProduto = await _productsFirebaseService.getProductsProps(meta['produto'], 'nome');
       meta['nome_produto'] = nomeProduto ?? '';
 
-      dynamic valorAtual;
+      // dynamic valorAtual;
 
-      if (meta['tipo'] == 'Venda') {
-        valorAtual = await _salesFirebaseService.getSalesProps(meta['produto'], 'valor');
-      } else {
-        valorAtual = await _productionFirebaseService.getProductionProps(meta['produto'], 'quantidade');
-      }
+      // if (meta['tipo'] == 'Venda') {
+      //   valorAtual = await _salesFirebaseService.getSalesProps(meta['produto'], 'valor');
+      // } else {
+      //   valorAtual = await _productionFirebaseService.getProductionProps(meta['produto'], 'quantidade');
+      // }
 
-      meta['valor_atual'] = double.tryParse( valorAtual?.toString() ?? '0') ?? 0.0;
+      meta['valor_atual'] = double.tryParse( meta['valor_atual']?.toString() ?? '0') ?? 0.0;
       meta['valor'] = double.tryParse(meta['valor']?.toString() ?? '0') ?? 0.0;
       meta['quantidade'] = double.tryParse(meta['quantidade']?.toString() ?? '0') ?? 0.0;
     }
@@ -114,8 +114,8 @@ class _ListGoalsScreenState extends State<ListGoalsScreen> {
                 final atual = meta['valor_atual']?.toStringAsFixed(2) ?? '0.00';
 
                 final metaAlvo = meta['tipo'] == 'Venda'
-                    ? (meta['valor'] ?? 0.0).toStringAsFixed(2)
-                    : (meta['quantidade'] ?? 0.0).toStringAsFixed(2);
+                    ? "R\$${(meta['valor'] ?? 0.0).toStringAsFixed(2)}"
+                    : "${(meta['quantidade'] ?? 0.0).toStringAsFixed(2)} ${meta['unidade'] ?? ''}";
 
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 8),
@@ -130,7 +130,7 @@ class _ListGoalsScreenState extends State<ListGoalsScreen> {
                       style: const TextStyle(color: Colors.white),
                     ),
                     subtitle: Text(
-                      'Meta: $metaAlvo $unidade | Atual: $atual\nPrazo: $prazo',
+                      'Meta: $metaAlvo | Atual: $atual\nPrazo: $prazo',
                       style: const TextStyle(color: Colors.white70),
                     ),
                     trailing: Icon(
