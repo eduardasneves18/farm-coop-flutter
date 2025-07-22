@@ -6,7 +6,7 @@ import '../users/login/login_firebase.dart';
 
 
 class SessionManager {
-  static const Duration sessionTimeout = Duration(minutes: 10);
+  static const Duration sessionTimeout = Duration(minutes: 20);
   Timer? _sessionTimer;
 
   final LoginFirebaseAuthService _authService;

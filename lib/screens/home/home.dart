@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Nova Transação',
+            'Coop Farm',
             style: TextStyle(
               fontSize: sizeScreen.width * 0.06,
               fontWeight: FontWeight.bold,
@@ -22,30 +22,26 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           const Text(
-            'Aqui você pode iniciar uma nova transação cooperativa.',
+            'Bem vindo(a) à nossa cooperativa!',
             style: TextStyle(
               fontSize: 16,
               color: Color(0xFFE8E3D4),
             ),
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF4CAF50),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+          const Text(
+            'Unindo forças para cultivar um futuro melhor.',
+            style: TextStyle(
+              fontSize: 16,
+              color: Color(0xFFE8E3D4),
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => RegisterProductScreen()),
-              );
-            },
-            child: const Text(
-              'Iniciar',
-              style: TextStyle(color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Somos uma cooperativa formada por fazendas que acreditam na força do trabalho coletivo, na valorização do produtor rural e na sustentabilidade do campo.',
+            style: TextStyle(
+              fontSize: 16,
+              color: Color(0xFFE8E3D4),
             ),
           ),
         ],
