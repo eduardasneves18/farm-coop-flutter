@@ -4,7 +4,6 @@ import 'package:coop_farm/services/firebase/firebase.dart';
 import 'package:coop_farm/services/firebase/users/user_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:generics_components_flutter/generics_components_flutter.dart';
-import '../../componentes/fields/dropdown/unit_dropdow_field.dart';
 import '../../utils/user_auth_checker.dart';
 
 class RegisterProductionScreen extends StatefulWidget {
@@ -24,7 +23,6 @@ class _RegisterProductionScreenState extends State<RegisterProductionScreen> {
   final TextEditingController _estimatedDateController = TextEditingController();
 
   Map<String, dynamic>? _produtoSelecionado;
-  String? _unidadeSelecionada;
   String? _statusSelecionado;
   bool _userChecked = false;
 
@@ -147,7 +145,6 @@ class _RegisterProductionScreenState extends State<RegisterProductionScreen> {
                 _produtoSelecionado = produto;
                 _productController.text = produto?['productId'] ?? '';
                 _unitController.text = produto?['unidade_medida'] ?? '';
-                _unidadeSelecionada = produto?['unidade_medida'];
               });
             },
           ),
@@ -155,7 +152,7 @@ class _RegisterProductionScreenState extends State<RegisterProductionScreen> {
           NumberField(
             controller: _quantityController,
             sizeScreen: sizeScreen,
-            hint: 'Quantidade${_unidadeSelecionada != null ? ' ($_unidadeSelecionada)' : ''}',
+            hint: 'Quantidade',
             iconColor: const Color(0xFFD5C1A1),
             textColor: const Color(0xFFD5C1A1),
             borderColor: const Color(0xFF4CAF50),
@@ -164,12 +161,24 @@ class _RegisterProductionScreenState extends State<RegisterProductionScreen> {
             labelColor: const Color(0xFF4CAF50),
           ),
           const SizedBox(height: 10),
-          UnitDropdownField(
-            selectedUnit: _unidadeSelecionada,
-            onChanged: (String? value) {
-              setState(() => _unidadeSelecionada = value);
-            },
-            sizeScreen: sizeScreen,
+          TextField(
+            controller: _unitController,
+            decoration: InputDecoration(
+              hintText: 'Unidade (ex: kg, litros, sacas)',
+              hintStyle: const TextStyle(color: Color(0xFFD5C1A1)),
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Color(0xFF4CAF50)),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Color(0xFF4CAF50), width: 2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              filled: true,
+              fillColor: Colors.transparent,
+            ),
+            style: const TextStyle(color: Color(0xFFD5C1A1)),
+            cursorColor: const Color(0xFF4CAF50),
           ),
           const SizedBox(height: 10),
           DropdownField(
